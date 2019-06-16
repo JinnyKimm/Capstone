@@ -10,6 +10,7 @@ import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Switch;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private String msg="ON";
     private String return_msg;
     Switch aSwitch,tSwitch, switch1,switch2,switch3,switch4;
+    SeekBar seek1,seek2,seek3,seek4,seek5,seek6;
 
     public String run(String input) {
         try {
@@ -60,12 +62,28 @@ public class MainActivity extends AppCompatActivity {
         switch2.setEnabled(false);
         switch3.setEnabled(false);
         switch4.setEnabled(false);
+        seek1=(SeekBar)findViewById(R.id.seekBar);
+        seek2=(SeekBar)findViewById(R.id.seekBar5);
+        seek3=(SeekBar)findViewById(R.id.seekBar2);
+        seek4=(SeekBar)findViewById(R.id.seekBar3);
+        seek5=(SeekBar)findViewById(R.id.seekBar4);
+        seek6=(SeekBar)findViewById(R.id.seekBar6);
+        seek1.setEnabled(false);
+        seek2.setEnabled(false);
+        seek3.setEnabled(false);
+        seek4.setEnabled(false);
+        seek5.setEnabled(false);
+        seek6.setEnabled(false);
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b==false){
                     tSwitch.setEnabled(true);
                     switch1.setEnabled(true);
+                    seek1.setEnabled(true);
+                    seek2.setEnabled(true);
+                    seek1.setProgress(100);
+                    seek2.setProgress(100);
                     //switch2.setEnabled(true);
                     //switch3.setEnabled(true);
                     //switch4.setEnabled(true);
@@ -76,6 +94,72 @@ public class MainActivity extends AppCompatActivity {
                                 run("ON");
                                 tSwitch.setText("   전체 소등");
                                 switch1.setChecked(true);
+                                seek1.setEnabled(true);
+                                seek2.setEnabled(true);
+                                seek1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                    @Override
+                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                        //progress가 바뀐 선택 값
+                                        try {
+                                            byte[] sendData = new byte[1024];
+                                            sendData = ("Y:" + progress).getBytes();
+                                            String ip = "172.20.10.2";
+                                            int port = 2807;
+                                            DatagramSocket clientSocket = new DatagramSocket();
+                                            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(ip), port);
+                                            clientSocket.send(sendPacket);
+                                            Log.d("UDP", "C: !!!!!!!!!!!!!!!!!!!");
+                                        } catch (Exception ex) {
+                                            Log.d("UDP", "C: Error", ex);
+                                        }
+                                    }
+                                    @Override
+                                    public void onStartTrackingTouch(SeekBar seekBar) {
+                                    }
+                                    @Override
+                                    public void onStopTrackingTouch(SeekBar seekBar) {
+                                    }
+                                });
+                                seek2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                    @Override
+                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                        //progress가 바뀐 선택 값
+                                        try {
+                                            byte[] sendData = new byte[1024];
+                                            sendData = ("W:" + progress).getBytes();
+                                            String ip = "172.20.10.2";
+                                            int port = 2807;
+                                            DatagramSocket clientSocket = new DatagramSocket();
+                                            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(ip), port);
+                                            clientSocket.send(sendPacket);
+                                            Log.d("UDP", "C: !!!!!!!!!!!!!!!!!!!");
+                                        } catch (Exception ex) {
+                                            Log.d("UDP", "C: Error", ex);
+                                        }
+                                    }
+                                    @Override
+                                    public void onStartTrackingTouch(SeekBar seekBar) {
+                                    }
+                                    @Override
+                                    public void onStopTrackingTouch(SeekBar seekBar) {
+                                    }
+                                });
+                                switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                        if(b==false) {
+                                            run("OFF");
+                                            seek1.setEnabled(false);
+                                            seek2.setEnabled(false);
+                                        }
+                                        else{
+                                            run("ON");
+                                            seek1.setEnabled(true);
+                                            seek2.setEnabled(true);
+                                        }
+                                    }
+                                });
+
                                 //switch2.setChecked(true);
                                 //switch3.setChecked(true);
                                 //switch4.setChecked(true);
@@ -87,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
                                 //switch2.setChecked(false);
                                 //switch3.setChecked(false);
                                 //switch4.setChecked(false);
+                                seek1.setEnabled(false);
+                                seek2.setEnabled(false);
+                                //seek3.setEnabled(false);
+                                //seek4.setEnabled(false);
                             }
                         }
                     });
@@ -96,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
                     switch2.setEnabled(false);
                     switch3.setEnabled(false);
                     switch4.setEnabled(false);
+                    seek1.setEnabled(false);
+                    seek2.setEnabled(false);
                 }
             }
         });
